@@ -13,7 +13,7 @@ class AuthController extends Controller
     //FITUR REGISTER
     public function register(Request $request)
     {
-        // Validasi input dari Flutter
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -29,16 +29,14 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Simpan user baru ke database
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password), // Enkripsi password bcrpyt
             'phone' => $request->phone,
-            'role' => 'customer' // Default role
+            'role' => 'customer' 
         ]);
 
-        // Buat token Sanctum untuk user baru ini
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -84,7 +82,26 @@ class AuthController extends Controller
             'user' => $user
         ], 200);
     }
+    public function forgotPassword(Request $request) 
+    {
+        // 1. Cek apakah email ada di DB
+        $user = User::where('email', $request->email)->first();
 
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email belum terdaftar di database StayPoint!'
+            ], 404);
+        }
+
+        // kirim OTP/Link di sini
+//.... belum dikerjakan masi mager zzzzzz
+        // Balikin JSON sukses
+        return response()->json([
+            'success' => true,
+            'message' => 'Kode OTP sukses dikirim!'
+        ], 200);
+    }
     // FITUR LOGOUT
     public function logout(Request $request)
     {
