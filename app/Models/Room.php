@@ -13,16 +13,14 @@ class Room extends Model
 
     public function hotel(): BelongsTo
     {
-        return $table->belongsTo(Hotel::class);
+        return $this->belongsTo(Hotel::class);
     }
-
     // Relasi ke foto-foto kamar
     public function images(): HasMany
     {
         return $this->hasMany(RoomImage::class);
     }
-
-    // Relasi Many-to-Many ke Facilities via tabel pivot
+    // Relasi Many-to-Many ke Facilities 
     public function facilities(): BelongsToMany
     {
         return $this->belongsToMany(Facility::class, 'room_facilities');
