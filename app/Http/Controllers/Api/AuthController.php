@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    //FITUR REGISTER
+    // FITUR REGISTER
     public function register(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -32,7 +31,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Enkripsi password bcrpyt
+            'password' => Hash::make($request->password), // Enkripsi password bcrypt
             'phone' => $request->phone,
             'role' => 'customer' 
         ]);
@@ -82,6 +81,8 @@ class AuthController extends Controller
             'user' => $user
         ], 200);
     }
+
+    // FITUR FORGOT PASSWORD
     public function forgotPassword(Request $request) 
     {
         // 1. Cek apakah email ada di DB
@@ -95,13 +96,15 @@ class AuthController extends Controller
         }
 
         // kirim OTP/Link di sini
-//.... belum dikerjakan masi mager zzzzzz
+        // .... belum dikerjakan masi mager zzzzzz
+        
         // Balikin JSON sukses
         return response()->json([
             'success' => true,
             'message' => 'Kode OTP sukses dikirim!'
         ], 200);
     }
+
     // FITUR LOGOUT
     public function logout(Request $request)
     {
@@ -112,5 +115,65 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Berhasil logout'
         ], 200);
+    }
+
+    // FITUR UPDATE PROFILE
+    public function updateProfile(Request $request) 
+    {
+        $request->validate([
+            'email' => 'required|email', 
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|min:8',
+        ]);
+        
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $user->name = $request->name;
+            $user->phone = $request->phone;
+            $user->save(); // Simpan perubahan ke MySQL
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile updated successfully!',
+                'user' => $user 
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User dengan email tersebut tidak ditemukan.'
+        ], 404);
+    }
+
+    public function changePassword(Request $request) 
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'current_password' => 'required',
+            'new_password' => 'required|min:6',
+        ]);
+        $user = User::where('email', $request->email)->first(); 
+
+        if ($user) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Password lama yang kamu masukkan salah!'
+                ], 400);
+            }
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password baru berhasil disimpan di DB!'
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengubah password, user tidak ditemukan.'
+        ], 404);
     }
 }
