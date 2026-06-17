@@ -14,6 +14,11 @@ class Booking extends Model
         'total_nights', 'total_price', 'payment_status', 'status', 'qr_code', 'pdf_receipt'
     ];
 
+    protected $casts = [
+        'check_in' => 'date',
+        'check_out' => 'date',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -28,7 +33,8 @@ class Booking extends Model
     public function addons(): BelongsToMany
     {
         return $this->belongsToMany(Addon::class, 'booking_addons')
-                    ->withPivot('quantity', 'subtotal'); // Biar kolom tambahan di pivot bisa diakses
+                    ->withPivot('quantity', 'subtotal')
+                    ->withTimestamps(); // Biar kolom tambahan di pivot bisa diakses
     }
 
     // Relasi ke Review (1 Booking maksimal punya 1 Review)
