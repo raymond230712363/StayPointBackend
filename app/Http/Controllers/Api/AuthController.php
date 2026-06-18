@@ -163,8 +163,9 @@ public function loginGoogle(Request $request)
     {
         $request->validate([
             'email' => 'required|email', 
-            'name' => 'required|string|max:255',
+            'name'  => 'required|string|max:255',
             'phone' => 'required|string|min:8',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
         
         $user = User::where('email', $request->email)->first();
@@ -172,7 +173,12 @@ public function loginGoogle(Request $request)
         if ($user) {
             $user->name = $request->name;
             $user->phone = $request->phone;
-            $user->save(); // Simpan perubahan ke MySQL
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo'); 
+                $path = $file->store('profiles', 'public');
+                $user->profile_photo = $path;
+            }
+            $user->save(); 
 
             return response()->json([
                 'success' => true,
@@ -186,6 +192,8 @@ public function loginGoogle(Request $request)
             'message' => 'User dengan email tersebut tidak ditemukan.'
         ], 404);
     }
+
+
 
     public function changePassword(Request $request) 
     {
