@@ -6,7 +6,9 @@ use App\Http\Controllers\Api\AuthController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login-google', [AuthController::class, 'loginGoogle']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+
 
 Route::post('/profile/update', [AuthController::class, 'updateProfile']);
 Route::post('/profile/change-password', [AuthController::class, 'changePassword']);

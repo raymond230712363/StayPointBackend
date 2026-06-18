@@ -82,6 +82,47 @@ class AuthController extends Controller
         ], 200);
     }
 
+
+public function loginGoogle(Request $request)
+    {
+        
+        $request->validate([
+            'email' => 'required|email',
+            'name' => 'required|string',
+            'google_id' => 'required|string',
+        ]);
+
+        $user = User::where('google_id', $request->google_id)
+                    ->orWhere('email', $request->email)
+                    ->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'google_id' => $request->google_id,
+                'password' => bcrypt(\Illuminate\Support\Str::random(16)),
+                'role' => 'customer',
+            ]);
+        } else {
+            if (empty($user->google_id)) {
+                $user->google_id = $request->google_id;
+                $user->save();
+            }
+        }
+
+        // 5. Buatkan access token Sanctum seperti proses login biasa
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login via Google berhasil!',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user
+        ], 200);
+    }
+
     // FITUR FORGOT PASSWORD
     public function forgotPassword(Request $request) 
     {
