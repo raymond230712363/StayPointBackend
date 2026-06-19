@@ -1,59 +1,62 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Deskripsi aplikasi
+StayPoint adalah aplikasi bergerak berbasis Android/iOS yang berfungsi untuk melakukan pencarian dan reservasi kamar hotel secara real-time. Proyek ini dibangun untuk memenuhi komponen penilaian UAS mata kuliah Pemrograman Berbasis Platform (PBP) 2026, Program Studi Informatika, Universitas Atma Jaya Yogyakarta.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Identitas Pengembang
+* **Nama:** Raymond Wijaya Gautama - 230712363
+* **Program Studi:** Informatika
+* **Institusi:** Universitas Atma Jaya Yogyakarta (UAJY)
 
-## About Laravel
+##  Komponen Penilaian UAS PBP (Ceklis Fitur)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Berdasarkan lembar komponen penilaian UAS PBP 2026, berikut adalah fungsionalitas yang telah diimplementasikan dalam proyek StayPoint:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Hosting & Deployment (15%)
+* **Back-end System & Database:** REST API Laravel dan database MySQL telah berhasil dihosting secara online dan dapat diakses publik.
+* **Device Deployment:** Aplikasi Flutter berhasil dideploy dan dijalankan langsung pada perangkat HP fisik / emulator.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Autentifikasi (5%)
+* **Registrasi & Login:** Form dilengkapi dengan validasi input (tidak boleh kosong/format email harus valid).
+* **Konfirmasi Dialog:** Fitur alert dialog konfirmasi muncul sebelum proses registrasi dieksekusi.
+* **Toast / SnackBar:** Aplikasi menampilkan floating SnackBar sukses berwarna hijau ketika user berhasil login maupun register.
+* **Integrasi API:** Sistem autentikasi sepenuhnya terhubung dengan endpoint backend Laravel.
 
-## Learning Laravel
+### 3. Read & Update Profil (10%)
+* **Menampilkan & Mengubah Data:** Fitur membaca data profil user dan memperbaruinya secara dinamis.
+* **Manajemen Gambar Profil:** Menampilkan dan mengunggah foto profil baru dari perangkat ke server melalui API.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 4. CRUD Transaksi (15%) & Full API (20%)
+* **Dua Fitur CRUD Transaksi:** Implementasi penuh manajemen reservasi hotel (Booking Kamar) dan riwayat transaksi yang mencakup operasi Create, Read, Update, dan Delete.
+* **Koneksi Rest API:** Seluruh fungsionalitas aplikasi menggunakan integrasi REST API secara end-to-end.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 5. Penggunaan Library UI (12%) & Estetika (5%)
+* Menggunakan minimal 3 library eksternal untuk mempercantik UI dan fungsionalitas data:
+  1. `image_picker` (Akses Media & Kamera)
+  2. `google_nav_bar` (Menu Navigasi Bawah Modern)
+  3. `http` / `dio` (Komunikasi REST API)
+* Tampilan antarmuka rapi, responsif, dan konsisten dengan rancangan desain UTS.
 
-## Laravel Sponsors
+### 6. Integrasi Hardware (13%)
+* **Kamera:** Mengimplementasikan fitur kamera bawaan perangkat menggunakan perantara library `image_picker` untuk mengubah foto profil secara langsung.
+* **Hardware Tambahan:** (Isi dengan hardware kedua Anda, contoh: Geolocation/Biometric Login).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Cara Menjalankan Proyek secara Lokal
 
-## Contributing
+### Prerequisites
+* Flutter SDK (Versi terbaru)
+* PHP >= 8.x & Composer
+* MySQL / XAMPP
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Pengaturan Backend (Laravel)
+1. Masuk ke folder backend: `cd staypoint-backend`
+2. Install dependensi: `composer install`
+3. Salin file konfigurasi: `cp .env.example .env` (Sesuaikan pengaturan database Anda di `.env`)
+4. Jalankan migrasi & seeder database: `php artisan migrate --seed`
+5. Jalankan server lokal: `php artisan serve --host=0.0.0.0`
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 2. Pengaturan Frontend (Flutter)
+1. Masuk ke folder frontend: `cd staypoint-frontend`
+2. Ambil paket library: `flutter pub get`
+3. Sesuaikan `baseUrl` pada file `lib/api_service.dart` dengan IP lokal laptop Anda atau URL hasil hosting.
+4. Jalankan aplikasi ke emulator/HP: `flutter run`
