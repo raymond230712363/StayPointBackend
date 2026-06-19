@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->nullable();
             $table->string('profile_photo')->nullable();
-            $table->string('role')->default('customer');// customer, admin
+            $table->string('role')->default('customer');
             $table->string('google_id')->nullable();
             $table->rememberToken();
             $table->timestamps();

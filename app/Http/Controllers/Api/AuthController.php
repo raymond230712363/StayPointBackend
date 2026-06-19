@@ -17,7 +17,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'phone' => 'nullable|string'
+            'phone' => 'required|string|min:10|max:15' 
         ]);
 
         if ($validator->fails()) {
@@ -31,7 +31,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Enkripsi password bcrypt
+            'password' => Hash::make($request->password), 
             'phone' => $request->phone,
             'role' => 'customer' 
         ]);
@@ -52,25 +52,25 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            'phone' => 'required|string|min:10' 
         ]);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
         }
 
-        // Cari user berdasarkan email
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)
+                    ->where('phone', $request->phone)
+                    ->first();
 
-        // Cek apakah user ada dan password-nya benar
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Email atau password salah'
+                'message' => 'Email, password, atau nomor telepon salah.'
             ], 401);
         }
 
-        // Buat token baru setelah sukses login
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -82,10 +82,9 @@ class AuthController extends Controller
         ], 200);
     }
 
-
-public function loginGoogle(Request $request)
+    // FITUR LOGIN GOOGLE
+    public function loginGoogle(Request $request)
     {
-        
         $request->validate([
             'email' => 'required|email',
             'name' => 'required|string',
@@ -103,6 +102,7 @@ public function loginGoogle(Request $request)
                 'google_id' => $request->google_id,
                 'password' => bcrypt(\Illuminate\Support\Str::random(16)),
                 'role' => 'customer',
+                'phone' => null, 
             ]);
         } else {
             if (empty($user->google_id)) {
@@ -111,7 +111,6 @@ public function loginGoogle(Request $request)
             }
         }
 
-        // 5. Buatkan access token Sanctum seperti proses login biasa
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -126,7 +125,6 @@ public function loginGoogle(Request $request)
     // FITUR FORGOT PASSWORD
     public function forgotPassword(Request $request) 
     {
-        // 1. Cek apakah email ada di DB
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
@@ -135,11 +133,7 @@ public function loginGoogle(Request $request)
                 'message' => 'Email belum terdaftar di database StayPoint!'
             ], 404);
         }
-
-        // kirim OTP/Link di sini
-        // .... belum dikerjakan masi mager zzzzzz
         
-        // Balikin JSON sukses
         return response()->json([
             'success' => true,
             'message' => 'Kode OTP sukses dikirim!'
@@ -149,7 +143,6 @@ public function loginGoogle(Request $request)
     // FITUR LOGOUT
     public function logout(Request $request)
     {
-        // Hapus token yang sedang digunakan saat ini
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
@@ -164,7 +157,7 @@ public function loginGoogle(Request $request)
         $request->validate([
             'email' => 'required|email', 
             'name'  => 'required|string|max:255',
-            'phone' => 'required|string|min:8',
+            'phone' => 'required|string|min:10|max:15', 
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
         
@@ -193,15 +186,15 @@ public function loginGoogle(Request $request)
         ], 404);
     }
 
-
-
+    // FITUR CHANGE PASSWORD
     public function changePassword(Request $request) 
     {
         $request->validate([
             'email' => 'required|email',
             'current_password' => 'required',
-            'new_password' => 'required|min:6',
+            'new_password' => 'required|min:8', 
         ]);
+        
         $user = User::where('email', $request->email)->first(); 
 
         if ($user) {
